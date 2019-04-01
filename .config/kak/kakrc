@@ -1,0 +1,30 @@
+colorscheme gruvbox
+add-highlighter global/ show-whitespaces
+add-highlighter global/ number-lines -relative
+
+source "%val{config}/plugins/plug.kak/rc/plug.kak"
+
+
+plug "andreyorst/powerline.kak" %{
+        hook -once global WinCreate .* %{
+            powerline-theme gruvbox
+            powerline-separator arrow
+            powerline-format git bufname filetype mode_info line_column position
+        }
+}
+
+hook global NormalKey y|d|c %{ nop %sh{
+      printf %s "$kak_main_reg_dquote" | xsel --input --clipboard
+}}
+
+set-option global ui_options ncurses_assistant=none
+
+map global user P '!xsel --output --clipboard<ret>'
+
+map global user p '<a-!>xsel --output --clipboard<ret>'
+
+
+eval %sh{kak-lsp --kakoune -s $kak_session}
+lsp-enable
+
+map -docstring "Method info." global user <x> ':lsp-hover<ret>'
